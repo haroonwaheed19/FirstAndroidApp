@@ -2,6 +2,8 @@ package com.example.greetingapp
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -19,9 +21,14 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
         val greetingText = findViewById<TextView>(R.id.tvGreetings)
         val userName = findViewById<TextView>(R.id.etName)
         val submitButton = findViewById<Button>(R.id.btSubmit)
+        val male = findViewById<RadioButton>(R.id.rdBtn1)
+        val female = findViewById<RadioButton>(R.id.rdbtn2)
+        val rdGroup = findViewById<RadioGroup>(R.id.rdGroup)
         var enteredName = ""
 
         submitButton.setOnClickListener {
@@ -33,9 +40,32 @@ class MainActivity : AppCompatActivity() {
             }
             else
             {
-                val message = "Welcome $enteredName!"
-                greetingText.text = message
-                userName.text = ""
+                if(male.isChecked)
+                {
+                    val message = "Welcome! Mr $enteredName!"
+                    greetingText.text = message
+                    userName.text = ""
+                    male.isChecked = false
+                    female.isChecked = false
+                }
+                else if(female.isChecked)
+                {
+                    val message = "Welcome! Ms $enteredName!"
+                    greetingText.text = message
+                    userName.text = ""
+                    male.isChecked = false
+                    female.isChecked = false
+                }
+                else
+                {
+                    val message = "Please Select the Gender first"
+                    greetingText.text = message
+                    Toast.makeText(this@MainActivity, "Please Select the Gender first", Toast.LENGTH_SHORT).show()
+                    userName.text = ""
+                    male.isChecked = false
+                    female.isChecked = false
+                }
+
             }
         }
     }
