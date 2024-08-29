@@ -3,4 +3,8 @@
     <string name="Greetings">Welcome to Android!</string>
     <string name="InputField">Please Enter your name</string>
     <string name="submitButton">Submit</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="Gender">Select the Gender</string>
+    <string name="Gender1">Select your Gender :</string>
 </resources>
