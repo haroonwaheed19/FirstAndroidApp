@@ -1,5 +1,6 @@
 package com.example.greetingapp
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.RadioButton
@@ -11,6 +12,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var greetingText : TextView
+    private lateinit var userName :TextView
+    private lateinit var submitButton : Button
+    private lateinit var male : RadioButton
+    private lateinit var female : RadioButton
+    private lateinit var rdGroup : RadioGroup
+    private lateinit var sf : SharedPreferences
+    private lateinit var  editor : SharedPreferences.Editor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,35 +30,41 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val greetingText = findViewById<TextView>(R.id.tvGreetings)
-        val userName = findViewById<TextView>(R.id.etName)
-        val submitButton = findViewById<Button>(R.id.btSubmit)
-        val male = findViewById<RadioButton>(R.id.rdBtn1)
-        val female = findViewById<RadioButton>(R.id.rdbtn2)
-        val rdGroup = findViewById<RadioGroup>(R.id.rdGroup)
+        greetingText = findViewById(R.id.tvGreetings)
+        userName = findViewById(R.id.etName)
+        submitButton = findViewById(R.id.btSubmit)
+        male = findViewById(R.id.rdBtn1)
+        female = findViewById(R.id.rdbtn2)
+        rdGroup = findViewById(R.id.rdGroup)
+        sf = getSharedPreferences("my_sf", MODE_PRIVATE)
+        editor = sf.edit()
 
         submitButton.setOnClickListener {
             val enteredName = userName.text.toString().trim()
 
             if (enteredName.isEmpty()) {
-                greetingText.text = "Welcome to Android!"
+                val greet = "Welcome to Android!"
+                greetingText.text = greet
                 Toast.makeText(this@MainActivity, "Please enter your name", Toast.LENGTH_SHORT).show()
             } else {
                 when {
                     male.isChecked -> {
-                        greetingText.text = "Welcome! Mr $enteredName!"
+                        val text = "Welcome! Mr. $enteredName!"
+                        greetingText.text = text
                         // Clear fields only if the input is valid
                         rdGroup.clearCheck()
                         userName.text = ""
                     }
                     female.isChecked -> {
-                        greetingText.text = "Welcome! Ms $enteredName!"
+                        val text = "Welcome! Ms $enteredName!"
+                        greetingText.text = text
                         // Clear fields only if the input is valid
                         rdGroup.clearCheck()
                         userName.text = ""
                     }
                     else -> {
-                        greetingText.text = "Hello $enteredName, please select your gender"
+                        val text = "Hello $enteredName, please select your gender"
+                        greetingText.text = text
                         Toast.makeText(this@MainActivity, "Please Select the Gender", Toast.LENGTH_SHORT).show()
                         // Do not clear the username field
                     }
@@ -57,5 +72,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-}
 
+    override fun onPause() {
+        super.onPause()
+        val enteredName = userName.text.toString().trim()
+        editor.apply {
+            putString("sf_name", enteredName)
+            commit()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val savedName = sf.getString("sf_name", null)
+        userName.text = savedName
+    }
+}
